@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DataSourceContextHolder {
-
     private static final ThreadLocal<String> context = new ThreadLocal<>();
 
     public static void setContext(String value) {

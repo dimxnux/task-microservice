@@ -8,7 +8,6 @@ import org.springframework.security.crypto.encrypt.Encryptors;
 
 @Configuration
 public class PasswordEncryptorConfig {
-
     @Value("${app.security.encryptor.password}")
     private String encoderPassword;
 

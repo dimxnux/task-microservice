@@ -8,15 +8,10 @@ import java.util.List;
 
 @Service
 public class DatabaseService {
-
-    private DatabaseRepository databaseRepository;
+    private final DatabaseRepository databaseRepository;
 
     public DatabaseService(DatabaseRepository databaseRepository) {
         this.databaseRepository = databaseRepository;
-    }
-
-    public Database addDatabase(Database database) {
-        return databaseRepository.save(database);
     }
 
     public List<Database> getAllDatabases() {

@@ -4,14 +4,11 @@ import org.springframework.security.crypto.encrypt.BytesEncryptor;
 
 import javax.persistence.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "databases")
 public class Database {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,9 +25,6 @@ public class Database {
     @Basic
     @Column(nullable = false)
     private byte[] encryptedPassword;
-
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "targetDatabases")
-    private Set<Task> tasks;
 
     public Database() {
     }
@@ -75,14 +69,6 @@ public class Database {
         this.encryptedPassword = encryptedPassword;
     }
 
-    public Set<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(Set<Task> tasks) {
-        this.tasks = tasks;
-    }
-
     public String decryptPassword(BytesEncryptor encryptor) {
         byte[] decryptedBytes = encryptor.decrypt(encryptedPassword);
 
@@ -104,12 +90,7 @@ public class Database {
 
     @Override
     public String toString() {
-        Set<Long> tasksIds = new HashSet<>();
-        tasks.forEach(task -> tasksIds.add(task.getId()));
-
         return "Database{" +
-                "id=" + id +
-                ", tasks='" + tasksIds + '\'' +
-                '}';
+                "id=" + id + '}';
     }
 }

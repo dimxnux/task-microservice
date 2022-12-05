@@ -4,7 +4,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("app.datasource.settings")
 public class SettingsDataSourceProperties {
-
     private String url;
     private String username;
     private String password;

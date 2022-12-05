@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 
 @Component
 public class DatabaseConverter {
-
     private final BytesEncryptor encryptor;
 
     public DatabaseConverter(BytesEncryptor encryptor) {
@@ -26,5 +25,4 @@ public class DatabaseConverter {
                 .type(HikariDataSource.class)
                 .build();
     }
-
 }

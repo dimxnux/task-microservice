@@ -10,7 +10,6 @@ import java.util.Map;
 
 @Configuration
 public class DataSourceConfig {
-
     @Bean
     public DataSource dataSource(SettingsDataSourceProperties properties) {
         RoutingDataSource routingDataSource = new RoutingDataSource();

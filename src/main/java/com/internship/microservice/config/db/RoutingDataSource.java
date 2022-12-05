@@ -12,10 +12,8 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class RoutingDataSource extends AbstractRoutingDataSource {
-
     public static final String LOOKUP_KEY_SETTINGS = "settings";
 
     public static DataSource DATA_SOURCE_SETTINGS;
@@ -26,7 +24,7 @@ public class RoutingDataSource extends AbstractRoutingDataSource {
     public RoutingDataSource() {
     }
 
-    public void setTargetDataSourcesFromDatabases(Set<Database> databases) {
+    public void setTargetDataSourcesFromDatabases(Iterable<Database> databases) {
         Map<Object, Object> dataSources = new HashMap<>();
 
         for (Database database : databases) {
@@ -38,7 +36,7 @@ public class RoutingDataSource extends AbstractRoutingDataSource {
         this.afterPropertiesSet();
     }
 
-    public void setSettingsTargetDataSource() {
+    public void setSettingsAsTargetDataSource() {
         Map<Object, Object> settingsTargetDataSource =
                 Collections.singletonMap(LOOKUP_KEY_SETTINGS, DATA_SOURCE_SETTINGS);
         this.setTargetDataSources(settingsTargetDataSource);
