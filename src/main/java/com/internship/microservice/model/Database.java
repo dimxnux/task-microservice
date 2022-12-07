@@ -13,14 +13,17 @@ public class Database {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String driverClassName;
+    @Column(nullable = false, unique = true)
+    private String alias;
 
     @Column(nullable = false)
     private String url;
 
     @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
+    private String driverClassName;
 
     @Basic
     @Column(nullable = false)
@@ -29,10 +32,11 @@ public class Database {
     public Database() {
     }
 
-    public Database(String driverClassName, String url, String username, byte[] encryptedPassword) {
-        this.driverClassName = driverClassName;
+    public Database(String alias, String url, String username, String driverClassName, byte[] encryptedPassword) {
+        this.alias = alias;
         this.url = url;
         this.username = username;
+        this.driverClassName = driverClassName;
         this.encryptedPassword = encryptedPassword;
     }
 
@@ -42,6 +46,14 @@ public class Database {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String name) {
+        this.alias = name;
     }
 
     public String getDriverClassName() {
@@ -97,7 +109,7 @@ public class Database {
 
     @Override
     public String toString() {
-        return "Database{" +
-                "id=" + id + '}';
+        return String.format("Database{id=%d, alias='%s', url='%s', username='%s', driverClassName='%s'}",
+                id, alias, url, username, driverClassName);
     }
 }

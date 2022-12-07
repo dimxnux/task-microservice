@@ -4,9 +4,7 @@ import com.internship.microservice.dto.DatabaseDTO;
 import com.internship.microservice.service.DatabaseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.encrypt.BytesEncryptor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,6 +21,14 @@ public class DatabaseController {
     @PostMapping("database/new")
     public ResponseEntity<?> addDatabase(@RequestBody @Valid DatabaseDTO databaseDTO) {
         databaseService.addDatabase(databaseDTO.toDatabase(bytesEncryptor));
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
+    @DeleteMapping("database")
+    public ResponseEntity<?> deleteDatabase(@RequestParam("id") Long databaseId) {
+        databaseService.deleteDatabaseById(databaseId);
 
         return ResponseEntity.ok()
                 .build();
