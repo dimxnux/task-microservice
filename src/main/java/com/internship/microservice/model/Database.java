@@ -29,6 +29,13 @@ public class Database {
     public Database() {
     }
 
+    public Database(String driverClassName, String url, String username, byte[] encryptedPassword) {
+        this.driverClassName = driverClassName;
+        this.url = url;
+        this.username = username;
+        this.encryptedPassword = encryptedPassword;
+    }
+
     public Long getId() {
         return id;
     }

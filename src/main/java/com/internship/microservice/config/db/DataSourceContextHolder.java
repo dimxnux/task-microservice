@@ -13,4 +13,8 @@ public class DataSourceContextHolder {
     public static String getContext() {
         return context.get();
     }
+
+    public static void clearContext() {
+        context.remove();
+    }
 }
