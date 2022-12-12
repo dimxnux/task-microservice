@@ -4,17 +4,12 @@ import org.springframework.security.crypto.encrypt.BytesEncryptor;
 
 import javax.persistence.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 @Entity
 @Table(name = "databases")
 public class Database {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String alias;
+    private String name;
 
     @Column(nullable = false)
     private String url;
@@ -32,28 +27,20 @@ public class Database {
     public Database() {
     }
 
-    public Database(String alias, String url, String username, String driverClassName, byte[] encryptedPassword) {
-        this.alias = alias;
+    public Database(String name, String url, String username, String driverClassName, byte[] encryptedPassword) {
+        this.name = name;
         this.url = url;
         this.username = username;
         this.driverClassName = driverClassName;
         this.encryptedPassword = encryptedPassword;
     }
 
-    public Long getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String name) {
-        this.alias = name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDriverClassName() {
@@ -98,18 +85,20 @@ public class Database {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Database database = (Database) o;
-        return Objects.equals(id, database.id);
+
+        return name.equals(database.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return name.hashCode();
     }
 
     @Override
     public String toString() {
-        return String.format("Database{id=%d, alias='%s', url='%s', username='%s', driverClassName='%s'}",
-                id, alias, url, username, driverClassName);
+        return String.format("Database{name='%s', url='%s', username='%s', driverClassName='%s'}",
+                name, url, username, driverClassName);
     }
 }

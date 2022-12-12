@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
                 body(errorResponse);
     }
 
-    @ExceptionHandler(value = {DuplicateDatabaseAliasException.class, DatabaseNotFoundException.class})
+    @ExceptionHandler(value = {DuplicateDatabaseNameException.class, DatabaseNotFoundException.class})
     public ResponseEntity<ErrorResponse> onDuplicateDatabaseAliasException(RuntimeException e,
                                                                            HttpServletRequest request) {
         log.error("Exception while handling request: ", e);

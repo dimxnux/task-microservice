@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 public class DatabaseDTO {
     @NotBlank
-    private String alias;
+    private String name;
     @NotBlank
     private String url;
     @NotBlank
@@ -20,16 +20,16 @@ public class DatabaseDTO {
     public DatabaseDTO() {
     }
 
-    public DatabaseDTO(String alias, String url, String username, String driverClassName, String password) {
-        this.alias = alias;
+    public DatabaseDTO(String name, String url, String username, String driverClassName, String password) {
+        this.name = name;
         this.url = url;
         this.username = username;
         this.driverClassName = driverClassName;
         this.password = password;
     }
 
-    public String getAlias() {
-        return alias;
+    public String getName() {
+        return name;
     }
 
     public String getUrl() {
@@ -55,6 +55,6 @@ public class DatabaseDTO {
     public Database toDatabase(BytesEncryptor bytesEncryptor) {
         byte[] encryptedPassword = bytesEncryptor.encrypt(password.getBytes());
 
-        return new Database(alias, url, username, driverClassName, encryptedPassword);
+        return new Database(name, url, username, driverClassName, encryptedPassword);
     }
 }

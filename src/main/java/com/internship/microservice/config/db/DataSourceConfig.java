@@ -23,7 +23,7 @@ public class DataSourceConfig {
         Map<Object, Object> targetDataSources =
                 Collections.singletonMap(RoutingDataSource.LOOKUP_KEY_SETTINGS, RoutingDataSource.DATA_SOURCE_SETTINGS);
         routingDataSource.setTargetDataSources(targetDataSources);
-
+        routingDataSource.afterPropertiesSet();
         DataSourceContextHolder.setContext(RoutingDataSource.LOOKUP_KEY_SETTINGS);
 
         return routingDataSource;

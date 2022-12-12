@@ -25,6 +25,8 @@ app:
 
 #logging:
 #  level:
+#    org.springframework.beans: debug
+#    org.springframework.jdbc.datasource.init: debug
 #    org.springframework: DEBUG
 #    org.springframework.jdbc.datasource: DEBUG;
 #    org.springframework.orm.jpa: DEBUG
