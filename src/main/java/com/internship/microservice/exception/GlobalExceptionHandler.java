@@ -57,18 +57,6 @@ public class GlobalExceptionHandler {
                 body(errorResponse);
     }
 
-    @ExceptionHandler(value = {DuplicateDatabaseNameException.class, DatabaseNotFoundException.class})
-    public ResponseEntity<ErrorResponse> onDuplicateDatabaseAliasException(RuntimeException e,
-                                                                           HttpServletRequest request) {
-        log.error("Exception while handling request: ", e);
-        List<String> errorMessages = new ArrayList<>();
-        errorMessages.add(e.getMessage());
-
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, errorMessages, request.getServletPath());
-        return ResponseEntity.badRequest()
-                .body(errorResponse);
-    }
-
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> onConstraintViolationException(ConstraintViolationException e,
                                                                         HttpServletRequest request) {
@@ -106,6 +94,30 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, errorMessages, request.getServletPath());
 
+        return ResponseEntity.badRequest()
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(value = {DatabaseNotFoundException.class})
+    public ResponseEntity<ErrorResponse> onNotFoundExceptions(RuntimeException e,
+                                                              HttpServletRequest request) {
+        log.error("Exception while handling request: ", e);
+        List<String> errorMessages = new ArrayList<>();
+        errorMessages.add(e.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, errorMessages, request.getServletPath());
+        return ResponseEntity.badRequest()
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(value = {DuplicateDatabaseNameException.class, DuplicateUserNameException.class})
+    public ResponseEntity<ErrorResponse> onDuplicateExceptions(RuntimeException e,
+                                                               HttpServletRequest request) {
+        log.error("Exception while handling request: ", e);
+        List<String> errorMessages = new ArrayList<>();
+        errorMessages.add(e.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT, errorMessages, request.getServletPath());
         return ResponseEntity.badRequest()
                 .body(errorResponse);
     }

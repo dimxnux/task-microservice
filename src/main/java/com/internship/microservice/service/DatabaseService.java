@@ -50,4 +50,8 @@ public class DatabaseService {
         databaseRepository.deleteByName(databaseName);
         DataSourceContextHolder.clearContext();
     }
+
+    public Optional<Database> getDatabaseByName(@NotBlank String databaseName) {
+        return databaseRepository.findByName(databaseName);
+    }
 }

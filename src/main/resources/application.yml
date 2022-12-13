@@ -11,7 +11,8 @@ spring:
       mode: always
 
 app:
-  task-execution-delay: 120000 # 2 min
+  task-execution-delay: 120_000 # 2 min
+#  task-execution-delay: 10_000 # 10 s
   datasource:
     settings:
       url: jdbc:postgresql://localhost:${DB_SETTINGS_PORT}/settings
