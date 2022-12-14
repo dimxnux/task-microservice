@@ -11,6 +11,9 @@ import java.time.LocalDate;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class User {
     @NotBlank
+    private String userName;
+
+    @NotBlank
     private String firstName;
 
     @NotBlank
@@ -24,9 +27,6 @@ public class User {
     @Pattern(regexp = "[A-Z]{2}")
     @NotNull
     private String nationality;
-
-    @NotBlank
-    private String userName;
 
     @NotBlank
     private String password;
