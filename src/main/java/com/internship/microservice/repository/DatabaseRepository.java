@@ -40,13 +40,10 @@ public class DatabaseRepository {
         List<Database> queriedDatabases;
 
         queriedDatabases = jdbcTemplate.query(sqlSelect, new BeanPropertyRowMapper<>(Database.class), name);
-        if (queriedDatabases.size() != 0) {
-            Database queriedDatabase = queriedDatabases.get(0);
 
-            return Optional.of(queriedDatabase);
-        }
-
-        return Optional.empty();
+        return queriedDatabases.isEmpty()
+                ? Optional.empty()
+                : Optional.of(queriedDatabases.get(0));
     }
 
     public void deleteByName(String name) {

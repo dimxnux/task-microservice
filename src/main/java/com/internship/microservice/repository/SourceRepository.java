@@ -12,7 +12,6 @@ public class SourceRepository {
     }
 
     public String getCurrentDatabase() {
-        // should return null?
         return jdbcTemplate.queryForObject("SELECT current_database()",
                 (rs, rowNum) -> rs.getString(1));
     }
