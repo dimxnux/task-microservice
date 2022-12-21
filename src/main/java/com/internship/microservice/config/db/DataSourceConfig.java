@@ -4,14 +4,13 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.Map;
 
 @Configuration
 public class DataSourceConfig {
     @Bean
-    public DataSource dataSource(SettingsDataSourceProperties properties) {
+    public RoutingDataSource dataSource(SettingsDataSourceProperties properties) {
         RoutingDataSource routingDataSource = new RoutingDataSource();
         RoutingDataSource.DATA_SOURCE_SETTINGS = DataSourceBuilder.create()
                 .url(properties.getUrl())
@@ -23,7 +22,6 @@ public class DataSourceConfig {
         Map<Object, Object> targetDataSources =
                 Collections.singletonMap(RoutingDataSource.LOOKUP_KEY_SETTINGS, RoutingDataSource.DATA_SOURCE_SETTINGS);
         routingDataSource.setTargetDataSources(targetDataSources);
-        routingDataSource.afterPropertiesSet();
         DataSourceContextHolder.setContext(RoutingDataSource.LOOKUP_KEY_SETTINGS);
 
         return routingDataSource;

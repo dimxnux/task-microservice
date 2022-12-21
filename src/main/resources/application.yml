@@ -1,12 +1,7 @@
 spring:
-  jpa:
-    open-in-view: false
-    show-sql: true
-    hibernate:
-      ddl-auto: create-drop
-    defer-datasource-initialization: true
   sql:
     init:
+      schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
       mode: always
 
@@ -24,9 +19,9 @@ app:
       password: ${ENCRYPTOR_PASSWORD}
       salt: ${ENCRYPTOR_SALT}
 
-#logging:
-#  level:
-#    org.springframework.beans: debug
+logging:
+  level:
+    org.springframework.beans: debug
 #    org.springframework.jdbc.datasource.init: debug
 #    org.springframework: DEBUG
 #    org.springframework.jdbc.datasource: DEBUG;
