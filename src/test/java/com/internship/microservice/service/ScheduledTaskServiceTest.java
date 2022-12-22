@@ -15,9 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class ScheduledTaskServiceTest {
     @Autowired
-    private RoutingDataSource routingDataSource;
-
-    @Autowired
     private DatabaseService databaseService;
 
     @Autowired

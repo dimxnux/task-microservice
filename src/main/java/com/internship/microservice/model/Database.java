@@ -2,26 +2,13 @@ package com.internship.microservice.model;
 
 import org.springframework.security.crypto.encrypt.BytesEncryptor;
 
-import javax.persistence.*;
 import java.nio.charset.StandardCharsets;
 
-@Entity
-@Table(name = "databases")
 public class Database {
-    @Id
     private String name;
-
-    @Column(nullable = false)
     private String url;
-
-    @Column(nullable = false)
     private String username;
-
-    @Column(nullable = false)
     private String driverClassName;
-
-    @Basic
-    @Column(nullable = false)
     private byte[] encryptedPassword;
 
     public Database() {

@@ -6,7 +6,6 @@ import com.internship.microservice.model.Database;
 import com.internship.microservice.repository.SourceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public class ScheduledTaskService {
         this.sourceRepository = sourceRepository;
     }
 
-    @Scheduled(fixedRateString = "${app.task-execution-delay}")
+//    @Scheduled(fixedRateString = "${app.task-execution-delay}")
     private void runScheduledTask() {
         DataSourceContextHolder.setContext(RoutingDataSource.LOOKUP_KEY_SETTINGS);
         List<Database> targetDatabases = databaseService.getAllDatabases();

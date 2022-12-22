@@ -24,26 +24,26 @@ public class DatabaseService {
     }
 
     public List<Database> getAllDatabases() {
-        return databaseRepository.findAll();
+        return databaseRepository.getAll();
     }
 
     public void addDatabase(@Valid Database database) {
         DataSourceContextHolder.setContext(RoutingDataSource.LOOKUP_KEY_SETTINGS);
 
-        Optional<Database> foundDatabase = databaseRepository.findByName(database.getName());
+        Optional<Database> foundDatabase = databaseRepository.getByName(database.getName());
         if (foundDatabase.isPresent()) {
             throw new DuplicateDatabaseNameException(String.format("The database name '%s' is already taken",
                     foundDatabase.get().getName()));
         }
 
-        databaseRepository.save(database);
+        databaseRepository.add(database);
         DataSourceContextHolder.clearContext();
     }
 
     public void deleteDatabaseByName(@NotBlank String databaseName) {
         DataSourceContextHolder.setContext(RoutingDataSource.LOOKUP_KEY_SETTINGS);
 
-        databaseRepository.findByName(databaseName).orElseThrow(() ->
+        databaseRepository.getByName(databaseName).orElseThrow(() ->
                 new DatabaseNotFoundException(String.format("No database with name '%s' available",
                         databaseName)));
 
@@ -52,6 +52,6 @@ public class DatabaseService {
     }
 
     public Optional<Database> getDatabaseByName(@NotBlank String databaseName) {
-        return databaseRepository.findByName(databaseName);
+        return databaseRepository.getByName(databaseName);
     }
 }

@@ -24,4 +24,12 @@ public class UserController {
         return ResponseEntity.ok()
                 .build();
     }
+
+    @PostMapping("user")
+    public ResponseEntity<?> addUser(@RequestBody User user) {
+        userService.addUser(user);
+
+        return ResponseEntity.ok()
+                .build();
+    }
 }

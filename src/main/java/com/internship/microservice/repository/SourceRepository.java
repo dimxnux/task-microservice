@@ -1,19 +1,18 @@
 package com.internship.microservice.repository;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 @Component
 public class SourceRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final JdbcTemplate jdbcTemplate;
+
+    public SourceRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public String getCurrentDatabase() {
-
-        return entityManager.createNativeQuery("SELECT current_database()")
-                .getSingleResult()
-                .toString();
+        return jdbcTemplate.queryForObject("SELECT current_database()",
+                (rs, rowNum) -> rs.getString(1));
     }
 }

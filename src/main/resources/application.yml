@@ -1,18 +1,13 @@
 spring:
-  jpa:
-    open-in-view: false
-    show-sql: true
-    hibernate:
-      ddl-auto: create-drop
-    defer-datasource-initialization: true
   sql:
     init:
+      schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
       mode: always
 
 app:
   task-execution-delay: 120_000 # 2 min
-#  task-execution-delay: 10_000 # 10 s
+  #  task-execution-delay: 10_000 # 10 s
   datasource:
     settings:
       url: jdbc:postgresql://localhost:${DB_SETTINGS_PORT}/settings
