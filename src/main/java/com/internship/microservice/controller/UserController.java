@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class UserController {
     private final UserService userService;
@@ -14,15 +16,14 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-// fixme
 
-//    @PostMapping("users")
-//    public ResponseEntity<?> addUsers(@RequestBody List<User> users) {
-//        userService.addUsers(users);
-//
-//        return ResponseEntity.ok()
-//                .build();
-//    }
+    @PostMapping("users")
+    public ResponseEntity<?> addUsers(@RequestBody List<User> users) {
+        userService.addUsers(users);
+
+        return ResponseEntity.ok()
+                .build();
+    }
 
     @PostMapping("user")
     public ResponseEntity<?> addUser(@RequestBody User user) {

@@ -2,16 +2,11 @@ package com.internship.microservice.repository;
 
 import com.internship.microservice.exception.DuplicateUserNameException;
 import com.internship.microservice.model.User;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,41 +25,31 @@ public class UserRepository {
                 "INSERT INTO users (user_name, first_name, last_name, sex, date_of_birth, nationality, password) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            jdbcTemplate.batchUpdate(sqlInsertUser, new BatchPreparedStatementSetter() {
-                @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    ps.setString(1, users.get(i).getUserName());
-                    ps.setString(2, users.get(i).getFirstName());
-                    ps.setString(3, users.get(i).getLastName());
-                    ps.setString(4, users.get(i).getSex());
-                    LocalDate userDateOfBirth = users.get(i).getDateOfBirth();
-                    if (userDateOfBirth == null) {
-                        ps.setNull(5, Types.DATE);
-                    } else {
-                        ps.setDate(5, Date.valueOf(userDateOfBirth));
-                    }
-                    ps.setString(6, users.get(i).getNationality());
-                    ps.setString(7, users.get(i).getPassword());
-                }
+        List<Object[]> list = new ArrayList<>();
+        for (int i = 0; i < users.size(); ++i) {
+            User user = users.get(i);
+            checkUserForUsernameDuplicate(user);
+            list.add(mapUserToObjectArray(user));
 
-                @Override
-                public int getBatchSize() {
-                    return BATCH_SIZE;
-                }
-            });
+            if (i % BATCH_SIZE == 0) {
+                jdbcTemplate.batchUpdate(sqlInsertUser, list);
+                list.clear();
+            }
         }
+        jdbcTemplate.batchUpdate(sqlInsertUser, list);
+    }
 
-//            int usersCount = 1;
-//            for (User user : users) {
-//
-//
-//
-//                if (usersCount % BATCH_SIZE == 0) {
-//                    preparedStatement.executeBatch();
-//                }
-//                ++usersCount;
-//            }
-//            preparedStatement.executeBatch();
+    private Object[] mapUserToObjectArray(User user) {
+        return new Object[]{
+                user.getUserName(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getSex(),
+                user.getDateOfBirth(),
+                user.getNationality(),
+                user.getPassword()
+        };
+    }
 
     private void checkUserForUsernameDuplicate(User user) {
         Optional<User> foundUser = findByUserName(user.getUserName());
@@ -79,14 +64,8 @@ public class UserRepository {
                 "INSERT INTO users (user_name, first_name, last_name, sex, date_of_birth, nationality, password) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        jdbcTemplate.update(sqlInsertUser,
-                user.getUserName(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getSex(),
-                user.getDateOfBirth(),
-                user.getNationality(),
-                user.getPassword());
+        Object[] userFields = mapUserToObjectArray(user);
+        jdbcTemplate.update(sqlInsertUser, userFields);
     }
 
     public Optional<User> findByUserName(String userName) {

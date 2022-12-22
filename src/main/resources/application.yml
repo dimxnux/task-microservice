@@ -7,7 +7,7 @@ spring:
 
 app:
   task-execution-delay: 120_000 # 2 min
-#  task-execution-delay: 10_000 # 10 s
+  #  task-execution-delay: 10_000 # 10 s
   datasource:
     settings:
       url: jdbc:postgresql://localhost:${DB_SETTINGS_PORT}/settings
@@ -19,9 +19,9 @@ app:
       password: ${ENCRYPTOR_PASSWORD}
       salt: ${ENCRYPTOR_SALT}
 
-logging:
-  level:
-    org.springframework.beans: debug
+#logging:
+#  level:
+#    org.springframework.beans: debug
 #    org.springframework.jdbc.datasource.init: debug
 #    org.springframework: DEBUG
 #    org.springframework.jdbc.datasource: DEBUG;
