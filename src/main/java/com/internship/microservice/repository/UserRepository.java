@@ -50,6 +50,25 @@ public class UserRepository {
         }
     }
 
+    public void addUsersBatch(List<User> users) {
+        String sqlInsertUser =
+                "INSERT INTO users (" + ALL_USER_COLUMNS + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        List<Object[]> list = new ArrayList<>();
+        int i = 1;
+        for (User user : users) {
+            checkUserForUsernameDuplicate(user);
+            list.add(mapUserToObjectArray(user));
+
+            if (i % BATCH_SIZE == 0) {
+                jdbcTemplate.batchUpdate(sqlInsertUser, list);
+                list.clear();
+            }
+            ++i;
+        }
+        jdbcTemplate.batchUpdate(sqlInsertUser, list);
+    }
+
     private void addUserFieldsToArgsList(User user, List<Object> destination) {
         destination.add(user.getUserName());
         destination.add(user.getFirstName());
