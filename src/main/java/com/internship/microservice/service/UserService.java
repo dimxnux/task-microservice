@@ -10,6 +10,8 @@ import com.internship.microservice.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -22,10 +24,12 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final DatabaseService databaseService;
+    private final UserTransaction userTransaction;
 
-    public UserService(UserRepository userRepository, DatabaseService databaseService) {
+    public UserService(UserRepository userRepository, DatabaseService databaseService, UserTransaction userTransaction) {
         this.userRepository = userRepository;
         this.databaseService = databaseService;
+        this.userTransaction = userTransaction;
     }
 
     public void addUsers(@Valid @NotEmpty List<User> users) {
@@ -34,14 +38,26 @@ public class UserService {
         Map<String, List<User>> usersByNationality = users.stream()
                 .collect(Collectors.groupingBy(User::getNationality));
 
-        for (Map.Entry<String, List<User>> entry : usersByNationality.entrySet()) {
-            List<User> usersOfNationality = entry.getValue();
+        try {
+            userTransaction.begin();
+            for (Map.Entry<String, List<User>> entry : usersByNationality.entrySet()) {
+                List<User> usersOfNationality = entry.getValue();
 
-            if (usersOfNationality.size() > 1) {
-                addUsersBatch(usersOfNationality);
-            } else {
-                addUser(usersOfNationality.get(0));
+                if (usersOfNationality.size() > 1) {
+                    addUsersBatch(usersOfNationality);
+                } else {
+                    addUser(usersOfNationality.get(0));
+                }
             }
+            userTransaction.commit();
+        } catch (Exception e) {
+            try {
+                userTransaction.rollback();
+            } catch (SystemException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            throw new RuntimeException(e);
         }
     }
 
@@ -64,11 +80,10 @@ public class UserService {
         DataSourceContextHolder.setContext(RoutingDataSource.LOOKUP_KEY_SETTINGS);
         Optional<Database> database = databaseService.getDatabaseByName(userNationality);
 
-        database.orElseThrow(() ->
-                new DatabaseNotFoundException(
-                        String.format("No database for the users with nationality '%s' available", userNationality))
-        );
-
+        if (!database.isPresent()) {
+            throw new DatabaseNotFoundException(
+                    String.format("No database for the users with nationality '%s' available", userNationality));
+        }
         DataSourceContextHolder.setContext(userNationality);
         Optional<User> foundUser = userRepository.findByUserName(user.getUserName());
         if (foundUser.isPresent()) {

@@ -50,4 +50,9 @@ public class DatabaseRepository {
         String sqlDelete = "DELETE FROM databases WHERE name = ?";
         jdbcTemplate.update(sqlDelete, name);
     }
+
+    public void deleteAll() {
+        String sqlDelete = "TRUNCATE databases";
+        jdbcTemplate.update(sqlDelete);
+    }
 }

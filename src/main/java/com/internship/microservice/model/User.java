@@ -24,7 +24,6 @@ public class User {
 
     private LocalDate dateOfBirth;
 
-    @Pattern(regexp = "[A-Z]{2}")
     @NotNull
     private String nationality;
 

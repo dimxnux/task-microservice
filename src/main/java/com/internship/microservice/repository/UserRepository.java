@@ -13,7 +13,8 @@ import java.util.Optional;
 @Component
 public class UserRepository {
     private static final int BATCH_SIZE = 10;
-
+    private static final String ALL_USER_COLUMNS =
+            "user_name, first_name, last_name, sex, date_of_birth, nationality, password";
     private final JdbcTemplate jdbcTemplate;
 
     public UserRepository(JdbcTemplate jdbcTemplate) {
@@ -22,12 +23,11 @@ public class UserRepository {
 
     public void addUsers(List<User> users) {
         String sqlInsertUser =
-                "INSERT INTO users (user_name, first_name, last_name, sex, date_of_birth, nationality, password) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO users (" + ALL_USER_COLUMNS + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         List<Object[]> list = new ArrayList<>();
-        for (int i = 0; i < users.size(); ++i) {
-            User user = users.get(i);
+        int i = 1;
+        for (User user : users) {
             checkUserForUsernameDuplicate(user);
             list.add(mapUserToObjectArray(user));
 
@@ -35,6 +35,7 @@ public class UserRepository {
                 jdbcTemplate.batchUpdate(sqlInsertUser, list);
                 list.clear();
             }
+            ++i;
         }
         jdbcTemplate.batchUpdate(sqlInsertUser, list);
     }
@@ -61,22 +62,31 @@ public class UserRepository {
 
     public void addUser(User user) {
         String sqlInsertUser =
-                "INSERT INTO users (user_name, first_name, last_name, sex, date_of_birth, nationality, password) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO users (" + ALL_USER_COLUMNS + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         Object[] userFields = mapUserToObjectArray(user);
         jdbcTemplate.update(sqlInsertUser, userFields);
     }
 
+    public List<User> getAll() {
+        String sqlSelect = "SELECT " + ALL_USER_COLUMNS + " FROM users";
+
+        return jdbcTemplate.query(sqlSelect, new BeanPropertyRowMapper<>(User.class));
+    }
+
     public Optional<User> findByUserName(String userName) {
         String sqlSelectUser =
-                "SELECT user_name, first_name, last_name, sex, date_of_birth, nationality, password" +
-                        " FROM users WHERE user_name = ?";
+                "SELECT " + ALL_USER_COLUMNS + " FROM users WHERE user_name = ?";
 
         List<User> queriedUsers = jdbcTemplate.query(sqlSelectUser, new BeanPropertyRowMapper<>(User.class), userName);
 
         return queriedUsers.isEmpty()
                 ? Optional.empty()
                 : Optional.of(queriedUsers.get(0));
+    }
+
+    public void deleteAll() {
+        String sqlDelete = "TRUNCATE users";
+        jdbcTemplate.update(sqlDelete);
     }
 }

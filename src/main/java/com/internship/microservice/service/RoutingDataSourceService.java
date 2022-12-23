@@ -4,12 +4,11 @@ import com.internship.microservice.config.db.DataSourceContextHolder;
 import com.internship.microservice.config.db.RoutingDataSource;
 import com.internship.microservice.model.Database;
 import com.internship.microservice.util.DatabaseConverter;
+import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RoutingDataSourceService {
@@ -39,9 +38,28 @@ public class RoutingDataSourceService {
         return candidateTargetDataSources;
     }
 
+    /**
+     * Replace all data sources from the {@code targetDataSources} with the new list of data sources
+     * fetched from the "settings". Doesn't replace the "settings" data source, because its
+     * only instance is stored in the {@link RoutingDataSource}.
+     */
     public void refreshTargetDataSources() {
         Map<Object, Object> targetDataSources = getCandidateTargetDataSources();
+        closeTargetDataSources();
         routingDataSource.setTargetDataSources(targetDataSources);
         routingDataSource.afterPropertiesSet();
+    }
+
+    /**
+     * Close all data sources from the targetDataSources except the "settings" data source.
+     */
+    private void closeTargetDataSources() {
+        Map<Object, DataSource> unmodifiableDataSources = routingDataSource.getResolvedDataSources();
+        Map<Object, DataSource> dataSources = new HashMap<>(unmodifiableDataSources);
+        dataSources.remove(RoutingDataSource.LOOKUP_KEY_SETTINGS);
+
+        for (DataSource dataSource : dataSources.values()) {
+            ((AtomikosDataSourceBean) dataSource).close();
+        }
     }
 }
