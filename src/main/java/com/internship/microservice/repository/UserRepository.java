@@ -2,6 +2,7 @@ package com.internship.microservice.repository;
 
 import com.internship.microservice.exception.DuplicateUserNameException;
 import com.internship.microservice.model.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,8 @@ import java.util.Optional;
 
 @Component
 public class UserRepository {
-    private static final int BATCH_SIZE = 10;
+    @Value("${app.jdbc.users.batch-size}")
+    private int BATCH_SIZE;
     private static final String ALL_USER_COLUMNS =
             "user_name, first_name, last_name, sex, date_of_birth, nationality, password";
     private final JdbcTemplate jdbcTemplate;
@@ -22,22 +24,40 @@ public class UserRepository {
     }
 
     public void addUsers(List<User> users) {
-        String sqlInsertUser =
-                "INSERT INTO users (" + ALL_USER_COLUMNS + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
+        final String sqlBaseInsert = "INSERT INTO users (" + ALL_USER_COLUMNS + ") VALUES ";
+        final String parameterPlaceholders = "(?, ?, ?, ?, ?, ?, ?)";
+        final String rowSeparator = ",";
 
-        List<Object[]> list = new ArrayList<>();
+        StringBuilder builder = new StringBuilder(sqlBaseInsert);
+        List<Object> queryArgs = new ArrayList<>();
         int i = 1;
         for (User user : users) {
-            checkUserForUsernameDuplicate(user);
-            list.add(mapUserToObjectArray(user));
+            builder.append(parameterPlaceholders).append(rowSeparator);
+            addUserFieldsToArgsList(user, queryArgs);
 
             if (i % BATCH_SIZE == 0) {
-                jdbcTemplate.batchUpdate(sqlInsertUser, list);
-                list.clear();
+                builder.deleteCharAt(builder.length() - 1);
+                jdbcTemplate.update(builder.toString(), queryArgs.toArray());
+                builder = new StringBuilder(sqlBaseInsert);
+                queryArgs.clear();
             }
             ++i;
         }
-        jdbcTemplate.batchUpdate(sqlInsertUser, list);
+
+        if (!queryArgs.isEmpty()) {
+            builder.deleteCharAt(builder.length() - 1);
+            jdbcTemplate.update(builder.toString(), queryArgs.toArray());
+        }
+    }
+
+    private void addUserFieldsToArgsList(User user, List<Object> destination) {
+        destination.add(user.getUserName());
+        destination.add(user.getFirstName());
+        destination.add(user.getLastName());
+        destination.add(user.getSex());
+        destination.add(user.getDateOfBirth());
+        destination.add(user.getNationality());
+        destination.add(user.getPassword());
     }
 
     private Object[] mapUserToObjectArray(User user) {

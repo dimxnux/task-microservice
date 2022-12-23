@@ -14,6 +14,9 @@ app:
       username: ${DB_SETTINGS_USERNAME}
       password: ${DB_SETTINGS_PASSWORD}
       driver-class-name: org.postgresql.Driver
+  jdbc:
+    users:
+      batch-size: 10
   jta:
     atomikos:
       pool-size: 10
