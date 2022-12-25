@@ -75,7 +75,7 @@ public class UserService {
         DataSourceContextHolder.clearContext();
     }
 
-    public void addUser(User user) {
+    public void addUser(@Valid User user) {
         String userNationality = user.getNationality().toLowerCase();
         DataSourceContextHolder.setContext(RoutingDataSource.LOOKUP_KEY_SETTINGS);
         Optional<Database> database = databaseService.getDatabaseByName(userNationality);
