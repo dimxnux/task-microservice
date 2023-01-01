@@ -103,7 +103,7 @@ public class GlobalExceptionHandler {
                                                               HttpServletRequest request) {
         log.error("Exception while handling request: ", e);
         List<String> errorMessages = new ArrayList<>();
-        errorMessages.add(e.getMessage());
+        errorMessages.add((e.getCause() != null) ? e.getCause().getMessage() : e.getMessage());
 
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, errorMessages, request.getServletPath());
         return ResponseEntity.badRequest()
@@ -115,7 +115,7 @@ public class GlobalExceptionHandler {
                                                                HttpServletRequest request) {
         log.error("Exception while handling request: ", e);
         List<String> errorMessages = new ArrayList<>();
-        errorMessages.add(e.getMessage());
+        errorMessages.add((e.getCause() != null) ? e.getCause().getMessage() : e.getMessage());
 
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT, errorMessages, request.getServletPath());
         return ResponseEntity.badRequest()
