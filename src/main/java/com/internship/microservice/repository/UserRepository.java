@@ -32,6 +32,7 @@ public class UserRepository {
         List<Object> queryArgs = new ArrayList<>();
         int i = 1;
         for (User user : users) {
+            checkUserForUsernameDuplicate(user);
             builder.append(parameterPlaceholders).append(rowSeparator);
             addUserFieldsToArgsList(user, queryArgs);
 
