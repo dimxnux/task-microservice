@@ -13,7 +13,7 @@ public class EventHandler {
     }
 
     @EventListener
-    public void onRefreshTargetDataSources(DatabasesUpdateEvent databasesUpdateEvent) {
+    public void onDatabasesUpdateEvent(DatabasesUpdateEvent databasesUpdateEvent) {
         routingDataSourceService.refreshTargetDataSources();
     }
 }
