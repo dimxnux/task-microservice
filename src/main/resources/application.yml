@@ -14,6 +14,9 @@ app:
       username: ${DB_SETTINGS_USERNAME}
       password: ${DB_SETTINGS_PASSWORD}
       driver-class-name: org.postgresql.Driver
+  jdbc:
+    users:
+      batch-size: 10
   jta:
     atomikos:
       pool-size: 10
@@ -21,13 +24,3 @@ app:
     encryptor:
       password: ${ENCRYPTOR_PASSWORD}
       salt: ${ENCRYPTOR_SALT}
-
-#logging:
-#  level:
-#    org.springframework.beans: debug
-#    org.springframework.jdbc.datasource.init: debug
-#    org.springframework: DEBUG
-#    org.springframework.jdbc.datasource: DEBUG;
-#    org.springframework.orm.jpa: DEBUG
-#    org.springframework.beans.factory.support: DEBUG
-
